@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NETLIFY_AUTH_TOKEN = credential("netlify-token")
+        NETLIFY_AUTH_TOKEN = credentials("netlify-token")
     }
 
     stages {
