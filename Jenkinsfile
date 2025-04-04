@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        NETLIFY_AUTH_TOKEN = credential("netlify-token")
+    }
+
     stages {
         stage ("Hello") {
             steps {
@@ -88,6 +92,8 @@ pipeline {
                 sh '''
                     npm install netlify-cli
                     node_modules/.bin/netlify --version
+                    echo "netlify auth toke $NETLIFY_AUTH_TOKEN"
+                    node_modules/.bin/netlify status
                 '''
             }
         }
