@@ -17,9 +17,13 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-                    aws --version
-                '''
+                withCredentials([usernamePassword(credentialsId: 'jenkins-accessKey', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        aws --version
+                        echo "<h1>Hollo world from aws s3 static website</h1>" > index.html
+                        aws s3 cp index.html s3://my-jenkins-learning-app-bucket/index.html
+                    '''
+                }
             }
         }
 
