@@ -9,6 +9,18 @@ pipeline {
 
     stages {
 
+        stage ("AWS") {
+            agent {
+                docker {
+                    image "docker pull amazon/aws-cli"
+                }
+            }
+
+            steps {
+                aws --version
+            }
+        }
+
         stage("Docker") {
             steps {
                 sh 'docker build -t my-playwright .'
@@ -67,8 +79,7 @@ pipeline {
 
                     steps {
                         sh '''
-                            npm install serve
-                            node_modules/.bin/serve -s build &
+                            serve -s build &
                             sleep 20
                             npx playwright test  --reporter=html
                         '''
