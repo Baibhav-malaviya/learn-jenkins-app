@@ -18,7 +18,7 @@ pipeline {
 
             steps {
                 sh '''
-                    aws --version
+                    --version
                 '''
             }
         }
