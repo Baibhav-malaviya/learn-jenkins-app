@@ -21,24 +21,6 @@ pipeline {
             }
         }
 
-        stage('AWS') {
-            agent {
-                docker {
-                    image 'amazon/aws-cli'
-                    args "--entrypoint=''"
-                }
-            }
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'jenkins-accessKey', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                    sh '''
-                        aws --version
-                        echo "<h1>Hollo world from aws s3 static website</h1>" > index.html
-                        aws s3 cp index.html s3://my-jenkins-learning-app-bucket/index.html
-                    '''
-                }
-            }
-        }
-
         stage('Build') {
             agent {
                 docker {
@@ -55,6 +37,29 @@ pipeline {
                     npm run build
                     ls -la
                 '''
+            }
+        }
+
+        stage('AWS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    reuseNode true
+                    args "--entrypoint=''"
+                }
+            }
+
+            environment {
+                AWS_S3_BUCKET = 'my-jenkins-learning-app-bucket'
+            }
+
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'jenkins-accessKey', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        aws --version
+                        aws s3 sync build s3://$AWS_S3_BUCKET
+                    '''
+                }
             }
         }
 
