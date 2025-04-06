@@ -129,7 +129,7 @@ pipeline {
             }
 
             environment {
-                CI_ENVIRONMENT_URL = 'YOUR NETLIFY SITE URL'
+                CI_ENVIRONMENT_URL = 'https://productiion-test.netlify.app/'
             }
 
             steps {
